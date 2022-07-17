@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
 class DioHelper {
-  static var dio;
+  static Dio dio = Dio();
 
   static init() {
     dio = Dio(
@@ -11,17 +11,18 @@ class DioHelper {
         receiveDataWhenStatusError: true,
         contentType: Headers.jsonContentType,
         responseType: ResponseType.json,
-        validateStatus: (_)=>true,
+        validateStatus: (_) => true,
       ),
     );
   }
 
-  static Future<Response> getData({required String url, required Map<String, dynamic> query,}
-    ) async {
-    return await dio.get(url, options: Options(headers: {"Content-Type":"application/json"})
+  static Future<Response> getData({
+    required String url,
+    required Map<String, dynamic> query,
+  }) async {
+    return await dio.get(
+      url,
+      queryParameters: query,
     );
   }
-
-
 }
-

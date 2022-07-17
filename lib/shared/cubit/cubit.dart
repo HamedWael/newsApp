@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -25,10 +22,6 @@ class AppCubit extends Cubit<AppStates>
       text: 'Home',
     ),
     const GButton(
-      icon: Icons.whatshot_outlined,
-      text: 'Popular News',
-    ),
-    const GButton(
       icon: Icons.search,
       text: 'Search',
     ),
@@ -39,10 +32,9 @@ class AppCubit extends Cubit<AppStates>
   ];
 
   List<Widget> screens = [
-    HomeScreen(),
-    PopularNewsScreen(),
-    SearchScreen(),
-    SettingsScreen(),
+    const HomeScreen(),
+    const SearchScreen(),
+    const SettingsScreen(),
   ];
 
   void changeBottomNavBar(int index) {
@@ -50,28 +42,27 @@ class AppCubit extends Cubit<AppStates>
     emit(BottomNavBarState());
   }
 
-  List<dynamic> popularNews = [];
+  List<dynamic> news = [];
 
-  void getPopular(){
+  void getNews(){
 
-    emit(PopularNewsLoadingState());
+    emit(NewsLoadingState());
 
     DioHelper.getData(
         url: 'v2/top-headlines',
         query: {
-          //'sortBy' : 'popularity',
-          'country':'eg',
-          'category' : 'science',
+          //https://newsapi.org/v2/top-headlines?apiKey=86a9fbc5cd754826a6b48c93f4055a8b
+          'language' : 'en',
           'apiKey' : '86a9fbc5cd754826a6b48c93f4055a8b',
         }
     ).then((value) {
-      popularNews = value.data['articles'];
-      print(popularNews[0]);
-      emit(PopularNewsGetSuccessState());
+      news = value.data["articles"];
+      //print(news[0]);
+      emit(NewsGetSuccessState());
     }
     ).catchError((error) {
       print('error is $error');
-      emit(PopularNewsGetErrorState(error.toString()));
+      emit(NewsGetErrorState(error.toString()));
     });
   }
 
