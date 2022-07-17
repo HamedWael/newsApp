@@ -66,7 +66,7 @@ class AppCubit extends Cubit<AppStates>
         }
     ).then((value) {
       popularNews = value.data['articles'];
-      print(popularNews[0]['title']);
+      print(popularNews[0]);
       emit(PopularNewsGetSuccessState());
     }
     ).catchError((error) {
