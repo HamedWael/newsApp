@@ -14,3 +14,5 @@ class NewsGetErrorState extends AppStates {
   NewsGetErrorState(this.error);
 }
 
+class NewsArGetState extends AppStates {}
+

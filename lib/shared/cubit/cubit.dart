@@ -29,12 +29,13 @@ class AppCubit extends Cubit<AppStates>
       icon: Icons.settings,
       text: 'Settings',
     ),
+
   ];
 
   List<Widget> screens = [
     const HomeScreen(),
     const SearchScreen(),
-    const SettingsScreen(),
+    SettingsScreen(),
   ];
 
   void changeBottomNavBar(int index) {
@@ -44,7 +45,7 @@ class AppCubit extends Cubit<AppStates>
 
   List<dynamic> news = [];
 
-  void getNews(){
+  void getNews(String language){
 
     emit(NewsLoadingState());
 
@@ -52,12 +53,12 @@ class AppCubit extends Cubit<AppStates>
         url: 'v2/top-headlines',
         query: {
           //https://newsapi.org/v2/top-headlines?apiKey=86a9fbc5cd754826a6b48c93f4055a8b
-          'language' : 'en',
+          'language' : language,
           'apiKey' : '86a9fbc5cd754826a6b48c93f4055a8b',
         }
     ).then((value) {
       news = value.data["articles"];
-      //print(news[0]);
+      //print(news[10]);
       emit(NewsGetSuccessState());
     }
     ).catchError((error) {
@@ -65,5 +66,9 @@ class AppCubit extends Cubit<AppStates>
       emit(NewsGetErrorState(error.toString()));
     });
   }
+
+
+
+
 
 }
