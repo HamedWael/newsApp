@@ -13,7 +13,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        appBar(context, 'Settings'),
+        appBar(context, AppThemeCubit.get(context).isArabic ? 'الإعدادات' : 'Settings'),
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
@@ -23,7 +23,7 @@ class SettingsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Dark Mode',
+                      AppThemeCubit.get(context).isArabic ? 'الوضع الليلي' : 'Dark Mode',
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
                     DayNightSwitcher(
@@ -40,13 +40,13 @@ class SettingsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Arabic News',
+                      AppThemeCubit.get(context).isArabic ? 'اللغة' : 'Language',
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
-                    Switch(
+                    Switch.adaptive(
                         value: AppThemeCubit.get(context).isArabic,
                         onChanged: (value) {
-                          AppThemeCubit.get(context).getArabicNews(value, AppCubit.get(context));
+                          AppThemeCubit.get(context).getArabicNews(cubit: AppCubit.get(context));
                         },
                     )
 

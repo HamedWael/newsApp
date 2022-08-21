@@ -1,20 +1,24 @@
+import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:news_app/shared/cubit/cubit.dart';
 import 'package:news_app/shared/styles/colors.dart';
 
+import '../../modules/settingsScreen/theme_cubit/cubit.dart';
+
 Widget newsListBuilder (list, context){
   return Stack(
-    alignment: Alignment.centerRight,
+    alignment: AlignmentDirectional.centerEnd,
     children: [
       Container(
         width: double.infinity,
         height: 120,
-        margin: const EdgeInsets.only(left: 24, bottom: 24, top: 24, right: 40),
+        margin: const EdgeInsets.only(left: 40, bottom: 24, top: 24, right: 40),
         padding: const EdgeInsetsDirectional.only(end: 32),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.only(topRight: Radius.circular(40),),
+          borderRadius: const BorderRadiusDirectional.only(topEnd: Radius.circular(40)),
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).shadowColor,
@@ -29,7 +33,7 @@ Widget newsListBuilder (list, context){
               width: 104,
               height: double.infinity,
               decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(topRight: Radius.circular(40),),
+                borderRadius: const BorderRadiusDirectional.only(topEnd: Radius.circular(40)),
               ),
               child: Image.network(
                 '${list['urlToImage']}',
@@ -88,7 +92,7 @@ Widget newsListBuilder (list, context){
         width: 32,
         height: 32,
         alignment: Alignment.center,
-        margin: const EdgeInsets.only(right: 24),
+        margin: const EdgeInsetsDirectional.only(end: 24),
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(16),
@@ -121,26 +125,73 @@ Widget appBar (context, @required title){
           '$title',
           style: Theme.of(context).textTheme.bodyText1,
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: mainPurpleColor,
-              width: 0.5,
+        Row(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              width: 48,
+              height: 48,
+              child: DayNightSwitcherIcon(
+                isDarkModeEnabled: AppThemeCubit.get(context).isDark,
+                onStateChanged: (value) {
+                  AppThemeCubit.get(context).changeTheme();
+                },
+              ),
             ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: IconButton(
-            icon: Icon(
-              Icons.more_horiz,
-              color: mainPurpleColor,
-              size: 18,
+            Container(
+              alignment: Alignment.center,
+              // width: 40,
+              // height: 40,
+              child: IconButton(
+                icon: Text(
+                    AppThemeCubit().isArabic ? 'en' : 'ع',
+                  style: TextStyle(
+                    fontSize: 16
+                  ),
+                ),
+                onPressed: ()
+                {
+                  AppThemeCubit.get(context).getArabicNews(cubit: AppCubit.get(context));
+                },
+              ),
             ),
-            onPressed: (){},
-          ),
+            Container(
+              alignment: Alignment.center,
+              width: 40,
+              height: 40,
+              child: IconButton(
+                icon: Icon(
+                  Icons.search,
+                  color: mainPurpleColor,
+                  size: 28,
+                ),
+                onPressed: (){},
+              ),
+            ),
+            SizedBox(width: 12,),
+            Container(
+              alignment: Alignment.center,
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: mainPurpleColor,
+                  width: 0.5,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.more_horiz,
+                  color: mainPurpleColor,
+                  size: 18,
+                ),
+                onPressed: (){},
+              ),
+            ),
+          ],
         ),
+
       ],
     ),
   );
@@ -169,10 +220,60 @@ Widget bottomNavBar (context){
       color: mainPurpleColor,
       activeColor: offWhiteColor,
       tabBackgroundColor: mainPurpleColor,
-      tabs: AppCubit.get(context).bottomItems,
+      tabs: AppCubit.get(context).bottomItems(context),
       onTabChange: (index){
         AppCubit.get(context).changeBottomNavBar(index);
       },
+    ),
+  );
+
+
+
+}
+
+Widget drawer (context){
+  return Drawer(
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppThemeCubit.get(context).isArabic ? 'الوضع الليلي' : 'Dark Mode',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              DayNightSwitcher(
+                isDarkModeEnabled: AppThemeCubit.get(context).isDark,
+                onStateChanged: (value) {
+                  AppThemeCubit.get(context).changeTheme();
+                },
+              ),
+
+            ],
+          ),
+          const SizedBox(height: 24,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                //AppThemeCubit.get(context).isArabic ? 'اللغة' : 'Language',
+                'Arabic',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              Switch.adaptive(
+                value: AppThemeCubit.get(context).isArabic,
+                onChanged: (value) {
+                  AppThemeCubit.get(context).getArabicNews(cubit: AppCubit.get(context));
+                },
+              ),
+
+
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }

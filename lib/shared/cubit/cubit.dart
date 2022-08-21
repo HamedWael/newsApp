@@ -8,6 +8,8 @@ import 'package:news_app/modules/settingsScreen/settingsScreen.dart';
 import 'package:news_app/shared/cubit/states.dart';
 import 'package:news_app/shared/network/remote/dio_helper.dart';
 
+import '../../modules/settingsScreen/theme_cubit/cubit.dart';
+
 class AppCubit extends Cubit<AppStates>
 {
   AppCubit() : super(AppInitialState());
@@ -16,21 +18,42 @@ class AppCubit extends Cubit<AppStates>
 
   int currentIndex = 0;
 
-  List<GButton> bottomItems = [
-    const GButton(
-      icon: Icons.home,
-      text: 'Home',
-    ),
-    const GButton(
-      icon: Icons.search,
-      text: 'Search',
-    ),
-    const GButton(
-      icon: Icons.settings,
-      text: 'Settings',
-    ),
+  List<GButton> bottomItems (context) {
+    List<GButton> bottomItem = [
+      GButton(
+        icon: Icons.home,
+        text: AppThemeCubit.get(context).isArabic ? 'الصفحة الرئيسية' : 'Home',
+        textStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      GButton(
+        icon: Icons.search,
+        text: AppThemeCubit.get(context).isArabic ? 'بحث' : 'Search',
+        textStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      GButton(
+        icon: Icons.settings,
+        text: AppThemeCubit.get(context).isArabic ? 'الإعدادات' : 'Settings',
+        textStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
 
-  ];
+    ];
+    return bottomItem;
+  }
 
   List<Widget> screens = [
     const HomeScreen(),
@@ -52,7 +75,7 @@ class AppCubit extends Cubit<AppStates>
     DioHelper.getData(
         url: 'v2/top-headlines',
         query: {
-          //https://newsapi.org/v2/top-headlines?apiKey=86a9fbc5cd754826a6b48c93f4055a8b
+          //https://newsapi.org/v2/top-headlines?language=ar&apiKey=86a9fbc5cd754826a6b48c93f4055a8b
           'language' : language,
           'apiKey' : '86a9fbc5cd754826a6b48c93f4055a8b',
         }

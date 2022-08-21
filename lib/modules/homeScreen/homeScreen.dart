@@ -20,11 +20,11 @@ class HomeScreen extends StatelessWidget {
 
         return Column(
           children: [
-            appBar(context, 'News App'),
+            //appBar(context, 'Newseum'),
             Expanded(
               child: ConditionalBuilder(
                 condition: list.isNotEmpty,
-                fallback: (context) => Center(child: CircularProgressIndicator()),
+                fallback: (context) => const Center(child: CircularProgressIndicator()),
                 builder: (context) => ListView.separated(
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) => newsListBuilder(list[index], context),
@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
                       Container(
                         height: 0.5,
                         color: mainPurpleColor,
-                        margin: const EdgeInsets.only(left: 24),
+                        margin: const EdgeInsets.only(left: 24, right: 24),
                       ),
                   itemCount: 20,
                 ),

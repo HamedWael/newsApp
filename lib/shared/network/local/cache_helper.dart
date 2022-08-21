@@ -8,5 +8,25 @@ class CasheHelper {
     sharedPrefrences = await SharedPreferences.getInstance();
   }
 
+  static Future<bool> putThemeData(
+      @required String key,
+      @required bool value
+      ) async
+   {
+    return await sharedPrefrences.setBool(key, value);
+   }
+
+  static bool? getThemeData(
+      @required String key,
+      )
+  {
+    return sharedPrefrences.getBool(key);
+  }
+
+
+
+
+
+
 
 }

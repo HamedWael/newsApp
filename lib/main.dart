@@ -5,8 +5,10 @@ import 'package:news_app/layout/home_layout.dart';
 import 'package:news_app/shared/components/constants.dart';
 import 'package:news_app/shared/cubit/cubit.dart';
 import 'package:news_app/shared/cubit/states.dart';
+import 'package:news_app/shared/network/local/cache_helper.dart';
 import 'package:news_app/shared/network/remote/dio_helper.dart';
 import 'package:news_app/shared/styles/colors.dart';
+import 'package:news_app/test.dart';
 
 import 'modules/settingsScreen/theme_cubit/cubit.dart';
 import 'modules/settingsScreen/theme_cubit/states.dart';
@@ -15,18 +17,8 @@ import 'modules/settingsScreen/theme_cubit/states.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-          statusBarBrightness: Brightness.light,
-          statusBarIconBrightness: Brightness.dark,
-          statusBarColor: Colors.transparent,
-          systemNavigationBarColor: Colors.white,
-          systemNavigationBarIconBrightness: Brightness.dark
-      )
-  );
-
-
   DioHelper.init();
+  await CasheHelper.init();
 
   runApp(const MyApp());
 }
@@ -38,7 +30,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => AppThemeCubit()..changeTheme(),
+      create: (BuildContext context) => AppThemeCubit()
+        ..changeTheme(
+        fromShared: CasheHelper.getThemeData('isDark')
+      ),
+        // ..getArabicNews(
+        //   cubit: AppCubit.get(context),
+        //   fromShared: CasheHelper.getThemeData('isArabic'),
+        // ),
       child: BlocConsumer<AppThemeCubit, AppThemeStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -75,14 +74,23 @@ class MyApp extends StatelessWidget {
                     color: Colors.black,
                 ),
               ),
-              appBarTheme: const AppBarTheme(
-                titleTextStyle: TextStyle(
+              appBarTheme: AppBarTheme(
+                titleTextStyle: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
                   fontSize: 22,
                 ),
                 elevation: 0,
-                backgroundColor: Colors.black,
+                backgroundColor: offWhiteColor,
+                systemOverlayStyle: const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarBrightness: Brightness.light,
+                  statusBarIconBrightness: Brightness.dark,
+                  systemNavigationBarColor: Colors.transparent,
+                ),
+                iconTheme: const IconThemeData(
+                  color: Colors.black
+                ),
               ),
               bottomNavigationBarTheme: const BottomNavigationBarThemeData(
                 type: BottomNavigationBarType.shifting,
@@ -101,6 +109,9 @@ class MyApp extends StatelessWidget {
                     fontSize: 14
                 ),
               ),
+              drawerTheme: DrawerThemeData(
+                backgroundColor: offWhiteColor
+              ),
 
             ),
             darkTheme: ThemeData(
@@ -108,7 +119,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.deepPurple,
               canvasColor: Colors.transparent,
               scaffoldBackgroundColor: darkBackColor,
-              shadowColor: Colors.black,
+              shadowColor: Colors.black54,
               textTheme: const TextTheme(
                 headline1: TextStyle(
                   color: Colors.white,
@@ -131,7 +142,7 @@ class MyApp extends StatelessWidget {
                 ),
                 bodyText2: TextStyle(
                   fontSize: 24,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
 
               ),
@@ -143,6 +154,12 @@ class MyApp extends StatelessWidget {
                 ),
                 elevation: 0,
                 backgroundColor: darkBackColor,
+                systemOverlayStyle: const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarBrightness: Brightness.dark,
+                  statusBarIconBrightness: Brightness.light,
+                  systemNavigationBarColor: Colors.transparent,
+                ),
               ),
               bottomNavigationBarTheme: BottomNavigationBarThemeData(
                 type: BottomNavigationBarType.shifting,
@@ -161,10 +178,16 @@ class MyApp extends StatelessWidget {
                     fontSize: 14
                 ),
               ),
+              drawerTheme: DrawerThemeData(
+                  backgroundColor: darkBackColor
+              ),
             ),
-            themeMode:
-            AppThemeCubit.get(context).isDark ? ThemeMode.dark : ThemeMode.light,
-            home: NewsHome(),
+            themeMode: AppThemeCubit.get(context).isDark ? ThemeMode.dark : ThemeMode.light,
+            home:
+                Directionality(
+                textDirection: AppThemeCubit.get(context).isArabic ? TextDirection.rtl : TextDirection.ltr,
+                child: NewsHome(),
+                ),
           );
         },
       ),
