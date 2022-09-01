@@ -16,11 +16,25 @@ class CasheHelper {
     return await sharedPrefrences.setBool(key, value);
    }
 
+
+  static Future<bool> putLangData(
+      @required bool value
+      ) async
+  {
+    return await sharedPrefrences.setBool('isArabic', value);
+  }
+
   static bool? getThemeData(
       @required String key,
       )
   {
     return sharedPrefrences.getBool(key);
+  }
+
+
+  static bool? getLangData()
+  {
+    return sharedPrefrences.getBool('isArabic');
   }
 
 

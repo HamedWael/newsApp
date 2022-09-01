@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
                 fallback: (context) => const Center(child: CircularProgressIndicator()),
                 builder: (context) => ListView.separated(
                   physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) => newsListBuilder(list[index], context),
+                  itemBuilder: (context, index) => newsListBuilder(context: context, index: index, list: list[index]),
                   separatorBuilder: (context, index) =>
                       Container(
                         height: 0.5,

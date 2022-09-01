@@ -29,15 +29,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => AppThemeCubit()
-        ..changeTheme(
-        fromShared: CasheHelper.getThemeData('isDark')
-      ),
-        // ..getArabicNews(
-        //   cubit: AppCubit.get(context),
-        //   fromShared: CasheHelper.getThemeData('isArabic'),
-        // ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+        create: (BuildContext context) => AppThemeCubit()
+      ..changeTheme(
+          fromShared: CasheHelper.getThemeData('isDark')
+      )
+    // ..getArabicNews(
+    //   context: context,
+    //   fromShared: CasheHelper.getLangData(),
+    // ),
+        ),
+        BlocProvider(create: (context) => AppCubit()..getNews(
+            url: 'v2/top-headlines',
+            key: 'language',
+            value: 'en'
+        ),
+        ),
+      ],
       child: BlocConsumer<AppThemeCubit, AppThemeStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -72,6 +82,17 @@ class MyApp extends StatelessWidget {
                 bodyText2: TextStyle(
                     fontSize: 24,
                     color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                ),
+                subtitle1: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                ),
+                subtitle2: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
               appBarTheme: AppBarTheme(
@@ -143,6 +164,17 @@ class MyApp extends StatelessWidget {
                 bodyText2: TextStyle(
                   fontSize: 24,
                   color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+                subtitle1: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+                subtitle2: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
                 ),
 
               ),

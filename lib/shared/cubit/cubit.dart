@@ -58,7 +58,7 @@ class AppCubit extends Cubit<AppStates>
   List<Widget> screens = [
     const HomeScreen(),
     const SearchScreen(),
-    SettingsScreen(),
+    //SettingsScreen(),
   ];
 
   void changeBottomNavBar(int index) {
@@ -68,15 +68,21 @@ class AppCubit extends Cubit<AppStates>
 
   List<dynamic> news = [];
 
-  void getNews(String language){
+  List<dynamic> search = [];
+
+  int selectedItem = 0;
+
+  void getNews({required String key, required String value, required String url}){
+
+    news = [];
 
     emit(NewsLoadingState());
 
     DioHelper.getData(
-        url: 'v2/top-headlines',
+        url: url,
         query: {
           //https://newsapi.org/v2/top-headlines?language=ar&apiKey=86a9fbc5cd754826a6b48c93f4055a8b
-          'language' : language,
+          key : value,
           'apiKey' : '86a9fbc5cd754826a6b48c93f4055a8b',
         }
     ).then((value) {
@@ -88,6 +94,37 @@ class AppCubit extends Cubit<AppStates>
       print('error is $error');
       emit(NewsGetErrorState(error.toString()));
     });
+  }
+
+  void getSearchNews({required String key, required String value, required String url}){
+
+    search = [];
+
+    emit(SearchNewsLoadingState());
+
+    DioHelper.getData(
+        url: url,
+        query: {
+          //https://newsapi.org/v2/top-headlines?language=ar&apiKey=86a9fbc5cd754826a6b48c93f4055a8b
+          key : value,
+          'apiKey' : '86a9fbc5cd754826a6b48c93f4055a8b',
+        }
+    ).then((value) {
+      search = value.data["articles"];
+      //print(news[10]);
+      emit(SearchNewsGetSuccessState());
+    }
+    ).catchError((error) {
+      print('error is $error');
+      emit(SearchNewsGetErrorState(error.toString()));
+    });
+  }
+
+  void selectItem (index)
+  {
+    selectedItem = index;
+
+    emit(NewsSelectItemState());
   }
 
 

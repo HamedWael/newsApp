@@ -16,3 +16,15 @@ class NewsGetErrorState extends AppStates {
 
 class NewsArGetState extends AppStates {}
 
+class SearchNewsLoadingState extends AppStates {}
+
+class SearchNewsGetSuccessState extends AppStates {}
+
+class SearchNewsGetErrorState extends AppStates {
+  final String error;
+
+  SearchNewsGetErrorState(this.error);
+}
+
+class NewsSelectItemState extends AppStates {}
+

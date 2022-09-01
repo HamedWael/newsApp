@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/modules/settingsScreen/theme_cubit/states.dart';
+import 'package:news_app/shared/cubit/cubit.dart';
 import 'package:news_app/shared/network/local/cache_helper.dart';
 
 class AppThemeCubit extends Cubit<AppThemeStates>
@@ -28,7 +29,7 @@ class AppThemeCubit extends Cubit<AppThemeStates>
 
   bool isArabic = false;
 
-  void getArabicNews ({cubit, fromShared}) {
+  void getArabicNews ({fromShared, required context}) {
     if (fromShared != null)
     {
       isArabic = fromShared;
@@ -36,12 +37,15 @@ class AppThemeCubit extends Cubit<AppThemeStates>
     } else
     {
       isArabic = !isArabic;
-      CasheHelper.putThemeData('isArabic', isArabic).then((value) {
+      CasheHelper.putLangData(isArabic).then((value) {
         emit(NewsArGetState());
       }
       );
     }
-    isArabic ? cubit.getNews('ar') : cubit.getNews('en');
+    isArabic ?
+    AppCubit.get(context).getNews(url: 'v2/top-headlines', key: 'language', value: 'ar')
+        :
+    AppCubit.get(context).getNews(url: 'v2/top-headlines', key: 'language', value: 'en') ;
   }
 
 }
