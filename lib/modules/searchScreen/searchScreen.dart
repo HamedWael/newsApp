@@ -13,90 +13,79 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var controller = TextEditingController();
 
-    var list = AppCubit().search;
+    var list = AppCubit.get(context).search;
 
     return BlocConsumer<AppCubit, AppStates>(
-  listener: (context, state) {},
-  builder: (context, state) {
-    return Directionality(
-      textDirection: AppThemeCubit.get(context).isArabic ? TextDirection.rtl : TextDirection.ltr,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(AppThemeCubit.get(context).isArabic ? 'بحث' : 'Search'),
-          centerTitle: true,
-          toolbarHeight: 80,
-        ),
-        body: Column(
-          children: [
-            //appBar(context, AppThemeCubit.get(context).isArabic ? 'بحث' : 'Search'),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(top: 48, right: 24, left: 24, bottom: 16),
-                child: Column(
-                  children: [
-                  TextFormField(
-                  controller: controller,
-                  keyboardType: TextInputType.text,
-                  onChanged: (value){
-                    AppCubit.get(context).getSearchNews(
-                        key: 'q',
-                        value: '$value',
-                        url: 'v2/everything'
-                    );
-                  },
-                    validator: (value){
-                    if(value?.length == 0){
-                      return 'Please enter something to search for';
-                    }
-                    return null;
-                    },
-                  decoration: InputDecoration(
-                    labelText: AppThemeCubit.get(context).isArabic ? 'بحث' : 'Search',
-                    labelStyle: TextStyle(
-                      color: AppThemeCubit.get(context).isDark ? Colors.white : mainPurpleColor
-                    ),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.search,
-                      color: AppThemeCubit.get(context).isDark ? Colors.white : mainPurpleColor,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color:  AppThemeCubit.get(context).isDark ? Colors.white : mainPurpleColor )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color:  AppThemeCubit.get(context).isDark ? Colors.white : mainPurpleColor )
+      listener: (context, state) {},
+      builder: (context, state) {
+
+        var list = AppCubit.get(context).search;
+
+        return Directionality(
+          textDirection: AppThemeCubit.get(context).isArabic
+              ? TextDirection.rtl
+              : TextDirection.ltr,
+          child: Scaffold(
+            appBar: AppBar(
+              title:
+                  Text(AppThemeCubit.get(context).isArabic ? 'بحث' : 'Search'),
+              centerTitle: true,
+              toolbarHeight: 80,
+            ),
+            body: Column(
+              children: [
+
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(
+                        top: 48, right: 24, left: 24, bottom: 16),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: controller,
+                          keyboardType: TextInputType.text,
+                          onChanged: (value)
+                          {
+                            AppCubit.get(context).getSearchNews(value: value,);
+                            },
+                          validator: (value) {
+                            if (value?.length == 0)
+                            {
+                              return 'Please enter something to search for';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: AppThemeCubit.get(context).isArabic ? 'بحث' : 'Search',
+                            labelStyle: TextStyle(
+                                color: AppThemeCubit.get(context).isDark ? Colors.white : Colors.black),
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: AppThemeCubit.get(context).isDark ? Colors.white : Colors.black,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: AppThemeCubit.get(context).isDark
+                                        ? Colors.white
+                                        : Colors.black)),
+                          ),
+                        ),
+
+                        //builder
+
+                        newsSearchBuilder(list, context: context)
+                      ],
                     ),
                   ),
-                    cursorColor: AppThemeCubit.get(context).isDark ? Colors.white : mainPurpleColor,
                 ),
-                    Expanded(
-                      child: ConditionalBuilder(
-                        condition: list.isNotEmpty,
-                        fallback: (context) => Center(child: CircularProgressIndicator()),
-                        builder: (context) => ListView.separated(
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) => newsListBuilder(context: context, index: index, list: list[index]),
-                          separatorBuilder: (context, index) =>
-                              Container(
-                                height: 0.5,
-                                color: mainPurpleColor,
-                                margin: const EdgeInsets.only(left: 24, right: 24),
-                              ),
-                          itemCount: 20,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
-  },
-);
   }
 }

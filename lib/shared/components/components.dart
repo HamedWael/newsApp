@@ -1,9 +1,11 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:news_app/shared/cubit/cubit.dart';
+import 'package:news_app/shared/cubit/states.dart';
 import 'package:news_app/shared/styles/colors.dart';
 
 import '../../modules/detailesScreen/detailesScreen.dart';
@@ -11,22 +13,22 @@ import '../../modules/searchScreen/searchScreen.dart';
 import '../../modules/settingsScreen/theme_cubit/cubit.dart';
 import '../../modules/settingsScreen/theme_cubit/states.dart';
 
-void navigateTo (context, page){
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => page,
-    ),
-  );
-}
+  void navigateTo (context, page){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
+  }
 
-Widget newsListBuilder ({required list, required context, index}){
+  Widget newsListBuilder ({required list, required context, index}){
   return Container(
     color: AppCubit.get(context).selectedItem == index ? Theme.of(context).shadowColor : null,
     child: InkWell(
       onTap: (){
-        // AppCubit.get(context).selectItem(index);
-        // navigateTo(context, DetailesScreen(list));
+        AppCubit.get(context).selectItem(index);
+        navigateTo(context, DetailesScreen(list));
       },
       child: Stack(
         alignment: AlignmentDirectional.centerEnd,
@@ -99,6 +101,8 @@ Widget newsListBuilder ({required list, required context, index}){
                           Text(
                             '${list['publishedAt']} UTC',
                             style: Theme.of(context).textTheme.headline3,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
                         ],
                       ),
@@ -135,7 +139,39 @@ Widget newsListBuilder ({required list, required context, index}){
   );
 }
 
-Widget app_Bar (context, @required title){
+  Widget newsSearchBuilder (list, {context}){
+
+  //var list = AppCubit().search;
+
+  return Expanded(
+    child: BlocConsumer<AppCubit, AppStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return ConditionalBuilder(
+          condition: list.length > 0,
+          fallback: (context) => Center(child: CircularProgressIndicator()),
+          builder: (context) => ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (context, index) => newsListBuilder(
+                context: context,
+                index: index,
+                list: list[index]
+            ),
+            separatorBuilder: (context, index) => Container(
+              height: 0.5,
+              color: mainPurpleColor,
+              margin:
+              const EdgeInsets.only(left: 24, right: 24),
+            ),
+            itemCount: list.length,
+          ),
+        );
+    },
+  ),
+  );
+}
+
+  Widget app_Bar (context, @required title){
   return Container(
     padding: const EdgeInsets.only(left: 24, right: 24, top: 40, bottom: 8),
     //color: offWhiteColor,
@@ -219,7 +255,7 @@ Widget app_Bar (context, @required title){
   );
 }
 
-appBar (context){
+  appBar (context){
   return AppBar(
     title: Text(
       'NEWZEUM',
@@ -242,6 +278,7 @@ appBar (context){
               ),
               onPressed: (){
                 navigateTo(context, SearchScreen());
+                AppCubit.get(context).search = [];
               },
             ),
           ),
@@ -252,7 +289,7 @@ appBar (context){
   );
 }
 
-Widget bottomNavBar (context){
+  Widget bottomNavBar (context){
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -286,7 +323,7 @@ Widget bottomNavBar (context){
 
 }
 
-Widget drawer (context){
+  Widget drawer (context){
   return BlocConsumer<AppThemeCubit, AppThemeStates>(
   listener: (context, state) {},
   builder: (context, state) {

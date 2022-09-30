@@ -9,9 +9,9 @@ class DioHelper {
       BaseOptions(
         baseUrl: 'https://newsapi.org/',
         receiveDataWhenStatusError: true,
-        contentType: Headers.jsonContentType,
-        responseType: ResponseType.json,
-        validateStatus: (_) => true,
+        // contentType: Headers.jsonContentType,
+        // responseType: ResponseType.json,
+        // validateStatus: (_) => true,
       ),
     );
   }

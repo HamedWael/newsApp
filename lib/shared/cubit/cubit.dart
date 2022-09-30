@@ -68,8 +68,6 @@ class AppCubit extends Cubit<AppStates>
 
   List<dynamic> news = [];
 
-  List<dynamic> search = [];
-
   int selectedItem = 0;
 
   void getNews({required String key, required String value, required String url}){
@@ -96,22 +94,23 @@ class AppCubit extends Cubit<AppStates>
     });
   }
 
-  void getSearchNews({required String key, required String value, required String url}){
+  List<dynamic> search = [];
 
-    search = [];
+  void getSearchNews({required String value}){
+
 
     emit(SearchNewsLoadingState());
 
     DioHelper.getData(
-        url: url,
+        url: 'v2/everything',
         query: {
           //https://newsapi.org/v2/top-headlines?language=ar&apiKey=86a9fbc5cd754826a6b48c93f4055a8b
-          key : value,
+          'q' : '$value',
           'apiKey' : '86a9fbc5cd754826a6b48c93f4055a8b',
         }
     ).then((value) {
-      search = value.data["articles"];
-      //print(news[10]);
+      search = value.data['articles'];
+      print(search);
       emit(SearchNewsGetSuccessState());
     }
     ).catchError((error) {
